@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
+import 'location_detail.dart';
 import 'styles.dart';
-
 import 'models/location.dart';
 
 class LocationList extends StatelessWidget {
-  final List<Location> _locations;
+  final List<Location> locations;
 
-  LocationList(this._locations);
+  LocationList(this.locations);
 
   @override
   Widget build(BuildContext context) {
@@ -18,16 +18,27 @@ class LocationList extends StatelessWidget {
         ),
       ),
       body: ListView.builder(
-        itemCount: this._locations.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            contentPadding: EdgeInsets.all(10),
-            leading: _itemThumbnail(this._locations[index]),
-            title: _itemTitle(this._locations[index]),
-          );
-        },
+        itemCount: this.locations.length,
+        itemBuilder: _listViewItemBuilder,
       ),
     );
+  }
+
+  Widget _listViewItemBuilder(BuildContext context, int index) {
+    var location = this.locations[index];
+    return ListTile(
+        contentPadding: EdgeInsets.all(10),
+        leading: _itemThumbnail(location),
+        title: _itemTitle(location),
+        onTap: () => _navigateToLocationDetail(context, location));
+  }
+
+  void _navigateToLocationDetail(BuildContext context, Location location) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => LocationDetail(location),
+        ));
   }
 
   Widget _itemThumbnail(Location location) {
@@ -35,7 +46,7 @@ class LocationList extends StatelessWidget {
       constraints: BoxConstraints.tightFor(width: 100.0),
       child: Image.network(
         location.url,
-        fit: BoxFit.fitHeight,
+        fit: BoxFit.fitWidth,
       ),
     );
   }
